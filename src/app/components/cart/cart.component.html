@@ -1,0 +1,45 @@
+<table mat-table [dataSource]="itemsInCart$ | async">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
+  </ng-container>
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell *matHeaderCellDef> Quantity </th>
+    <td mat-cell *matCellDef="let element"><input 
+        value="{{element.quantity}}"
+        (keyup.enter)="saveUpdatedQuantity($event, element)" /></td>
+  </ng-container>
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef> Price </th>
+    <td mat-cell *matCellDef="let element"> {{ element.price | currency }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<div *ngIf="!(itemsInCart$ | async) || (itemsInCart$ | async).length === 0"><p>Your Cart is Empty!</p></div>
+
+<mat-card>
+    <p> Total: {{ total | currency }} </p>
+</mat-card>
+
+<button mat-button (click)="toggleAddForm()">{{ showHideAvailableItemsText }}</button>
+
+<ng-container *ngIf="showAvailableItems">
+    <button mat-button class="add-item-button" (click)="addItemsToCart()">Add Item(s)</button>
+    <div class="available-items-container-flex">
+      <ng-container *ngFor="let item of availableItems$ | async">
+          <div class="available-items-flex">
+              <div>
+                  <input 
+                      type="checkbox"
+                      value="{{item.checked}}"
+                      [(ngModel)]="item.checked" />
+                  <p>{{ item.name }}</p>
+              </div>
+              <img src="{{ item.img }}"/>
+          </div>
+      </ng-container>
+    </div>
+</ng-container> 
